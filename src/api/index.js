@@ -16,4 +16,26 @@ export default class ContactApi {
       throw new Error(error);
     }
   }
+  addContactApi = async (data) => {
+    const BASE_API = 'https://contact.herokuapp.com/';
+    try {
+      const bodyPost = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        age: parseInt(data.age),
+        ...(data.photo && { photo: data.photo })
+      };
+      const response = await fetch(`${BASE_API}contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': "application/json",
+        },
+        body: JSON.stringify(bodyPost),
+      });
+      return response
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }

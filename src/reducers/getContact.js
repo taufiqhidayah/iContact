@@ -1,7 +1,7 @@
-import { FETCH_CONTACTS_REQUEST_DONE, FETCH_CONTACTS_REQUEST_ERROR, FETCH_CONTACTS_REQUEST_START } from '../actions/contactAction'
+import { FETCH_CONTACTS_REQUEST_DONE, FETCH_CONTACTS_REQUEST_ERROR, FETCH_CONTACTS_REQUEST_START } from '../actions/getContactAction'
 
 const initialState = {
-  contacts: [],
+  contact: [],
   loading: false,
   error: undefined,
 };

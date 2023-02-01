@@ -1,7 +1,10 @@
-import {combineReducers} from 'redux';
-import contact from './contactData';
+import { combineReducers } from 'redux';
+import addContact from './addContact';
+import contact from './getContact';
+
 const appReducer = combineReducers({
   contact,
+  addContact
 });
 
 const rootReducer = (state, action) => {
