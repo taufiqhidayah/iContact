@@ -1,4 +1,4 @@
-import { View, Text, Alert } from 'react-native'
+import { View, Image, Alert } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Avatar } from 'react-native-elements';
@@ -11,19 +11,19 @@ import { useDispatch, useSelector, shallowEqual } from "react-redux";
 
 import ActivityIndicator from './ActivityIndicatorService';
 import { addContact } from '../actions/addContactAction';
+import { updateContact } from '../actions/editContactAction';
 
-export default function AddContact({ route }) {
+export default function AddContact({ route, navigation }) {
     const item = route?.params?.item;
     const dispatch = useDispatch();
     const _handleFormSubmit = async values => {
         try {
-            ActivityIndicator.setLoading(true, 'Sending...')
-
-            // await contactApi.addContactApi(values)
-            await dispatch(addContact(values))
-
-            ActivityIndicator.setLoading(false)
-            // toastersRef?.current.push({ title: 'Success', message: 'Notification successfully sent.' })
+            if (item) {
+                await dispatch(updateContact(item.id, values))
+            } else {
+                await dispatch(addContact(values))
+            }
+            navigation.goBack();
         } catch (error) {
             Alert.alert(error.name, error.message, [
                 { text: 'OK', onPress: async () => await ActivityIndicator.setLoading(false) }
@@ -58,12 +58,7 @@ export default function AddContact({ route }) {
                                         title={values.firstName[0]} />
                                 ) : (
 
-                                    <Avatar
-                                        containerStyle={{ backgroundColor: "grey" }}
-                                        size="large"
-                                        rounded
-                                        source={{ uri: values.photo }}
-                                        title="MT" />
+                                    <Image source={{ uri: values?.photo }} style={{ width: 50, height: 50, borderRadius: 50 }} />
                                 )}
                             </View>
                             <View style={{
