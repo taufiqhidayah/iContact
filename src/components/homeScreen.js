@@ -1,20 +1,18 @@
 import {
     View,
     Text,
-    TouchableOpacity,
-    FlatList,
     SafeAreaView,
     SectionList,
-    ActivityIndicator
+    RefreshControl,
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useFo } from 'react'
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { fetchContact } from '../actions/getContactAction';
 
-import { SearchBar } from '@rneui/themed';
-import { Avatar, Card, ListItem } from 'react-native-elements';
-import { Badge, FAB } from '@rneui/themed';
-export default function ContactScreen({ navigation }) {
+import { Input } from '@rneui/themed';
+import { Avatar, Card, Icon, ListItem } from 'react-native-elements';
+import ListComponent from './fragment/ListComponent';
+export default function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
     const [contactData, setContactsData] = useState([])
 
@@ -32,6 +30,17 @@ export default function ContactScreen({ navigation }) {
         setContactsData(JSON.stringify(contacts))
     }, [contacts])
 
+    const onRefresh = React.useCallback(() => {
+        dispatch(fetchContact());
+    }, []);
+
+    useEffect(() => {
+        const focusHandler = navigation.addListener('focus', () => {
+            dispatch(fetchContact());
+        });
+        return focusHandler;
+    }, [navigation]);
+
     const firstData = contacts?.contact.map(val => ({
         category: val.firstName[0],
         data: val,
@@ -46,56 +55,70 @@ export default function ContactScreen({ navigation }) {
         return [...acc, { title: curr.category, data: [curr.data] }];
     }, []);
 
+    const sortByTitle = mergeData.sort((a, b) => a.title.localeCompare(b.title));
     return (
         <SafeAreaView style={{}}>
-            {contacts?.loading && (
-                <ActivityIndicator size="large" color="#0000ff" />
-            )}
+            <Input
+                onPressIn={() => navigation.navigate('search')}
+                placeholder="Search by ID"
+                rightIcon={{ type: 'ionicon', name: 'search-outline' }}
+            />
+
             {contacts?.contact && (
-                <SectionList
-                    sections={mergeData}
-                    keyExtractor={(item, index) => item + index}
-                    renderItem={({ item }) => (
-                        <ListItem onPress={() => navigation.navigate('add', { item })} bottomDivider>
-                            {item.photo === 'N/A' ? (
-                                <Avatar
-                                    rounded
-                                    title={item.firstName[0]}
-                                    containerStyle={{ backgroundColor: "grey" }}
-                                />
-                            ) : (
-                                <Avatar
-                                    rounded
-                                    containerStyle={{ backgroundColor: "grey" }}
-                                    source={{ uri: item.photo }}
-                                />
-                            )}
+                // <SectionList
+                //     refreshControl={
+                //         <RefreshControl refreshing={contacts?.loading} onRefresh={onRefresh} />
+                //     }
+                //     sections={sortByTitle}
+                //     keyExtractor={(item, index) => item + index}
+                //     renderItem={({ item }) => (
+                //         <ListItem style={{ marginTop: 1 }} onPress={() => navigation.navigate('add', { item })} bottomDivider>
+                //             {item.photo !== 'N/A' ? (
+                //                 <Avatar
+                //                     rounded
+                //                     containerStyle={{ backgroundColor: "grey" }}
+                //                     source={{ uri: item?.photo || 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }}
+                //                 />
+                //             ) : (
 
-                            <ListItem.Content>
-                                <ListItem.Title>{item.firstName + ' ' + item.lastName}</ListItem.Title>
-                                <ListItem.Subtitle>Age: {item.age}</ListItem.Subtitle>
-                            </ListItem.Content>
-                        </ListItem>
-                        // <Text>{item.firstName}</Text>
-                    )}
-                    renderSectionHeader={({ section: { title } }) => (
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            alignContent: 'flex-start',
-                            marginLeft: 20,
-                            marginTop: 10,
-                        }}>
-                            <Text style={{
-                                fontFamily: 'Nunito-SemiBold',
-                                fontWeight: '300',
-                            }}> {title}</Text>
-                        </View>
+                //                 <Avatar
+                //                     rounded
+                //                     title={item.firstName[0]}
+                //                     containerStyle={{ backgroundColor: "grey" }}
+                //                 />
+                //             )}
 
-                    )}
+                //             <ListItem.Content>
+                //                 <ListItem.Title>{item.firstName + ' ' + item.lastName}</ListItem.Title>
+                //                 <ListItem.Subtitle>Age: {item.age}</ListItem.Subtitle>
+                //             </ListItem.Content>
+                //             <Icon name="chevron-right" />
+                //         </ListItem>
+                //     )}
+                //     renderSectionHeader={({ section: { title } }) => (
+                //         <View style={{
+                //             flexDirection: 'row',
+                //             justifyContent: 'flex-start',
+                //             alignContent: 'flex-start',
+                //             marginLeft: 20,
+                //             marginTop: 10,
+                //             marginBottom: 10
+                //         }}>
+                //             <Text style={{
+                //                 fontFamily: 'Nunito-SemiBold',
+                //                 fontWeight: '300',
+                //             }}> {title}</Text>
+                //         </View>
+
+                //     )}
+                // />
+                <ListComponent
+                    data={contacts?.contact}
+                    navigation={navigation}
+                    onRefresh={onRefresh}
+                    loading={contacts?.loading}
                 />
             )}
-
         </SafeAreaView >
     )
 }
