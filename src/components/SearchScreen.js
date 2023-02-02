@@ -20,8 +20,8 @@ export default function SearchScreen({ navigation }) {
 
     console.log(contacts.contact, 'contact')
     return (
-        <View>
-            <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center', marginLeft: 10 }}>
                 <View>
                     <Icon
                         onPress={() => navigation.goBack()}
@@ -32,12 +32,9 @@ export default function SearchScreen({ navigation }) {
                 </View>
                 <View style={{ width: '85%', marginTop: 20 }}>
                     <Input
-                        // onChange={(e) => dispatch(fetchContactById(e.value)) }
-                        // onChange={(value ) => console.log(value)}
                         onChangeText={(value) => setSearch(value)}
                         focusable
-                        autoFocus
-                        placeholder='Search'
+                        placeholder='Search by ID'
                     />
 
                 </View>
@@ -48,15 +45,20 @@ export default function SearchScreen({ navigation }) {
                     style={{ marginLeft: 10 }}
                 />
             </View>
-            {contacts.contact && (
+            {contacts?.contact?.id && (
                 <ListComponent
                     onRefresh={onRefresh}
-                    data={[contacts.contact]}
+                    data={[contacts?.contact]}
                     navigation={navigation}
                     loading={contacts?.loading}
 
                 />
             )}
+
+            {contacts?.error?.message && !contacts?.contact?.id && (
+                <Text style={{ marginLeft: 20, color: '#000' }}>{contacts?.error?.message}</Text>
+            )}
+
 
         </View>
     )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, TouchableOpacity, View, Alert } from 'react-native'
+import { View, Alert } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
@@ -14,13 +14,18 @@ const Stack = createStackNavigator();
 
 function DrawerNavigation({ }) {
     const dispatch = useDispatch();
-    const createTwoButtonAlert = (id) =>
+    const createTwoButtonAlert = (navigation, id) =>
         Alert.alert('Confirmation ', 'Are you sure you want to delete?', [
             {
                 text: 'Cancel',
                 style: 'cancel',
             },
-            { text: 'Delete', onPress: () => dispatch(deleteContact(id)) },
+            {
+                text: 'Delete', onPress: () => {
+                    dispatch(deleteContact(id))
+                    navigation.navigate('home')
+                }
+            },
         ]);
     return (
         <>
@@ -47,7 +52,6 @@ function DrawerNavigation({ }) {
                                     name='add-outline'
                                     type='ionicon'
                                     color={'#fff'}
-                                    // onPress={() => dispatch(deleteContact(item.id))}
                                     onPress={() => navigation.push('add')}
                                 />
                             ),
@@ -67,7 +71,7 @@ function DrawerNavigation({ }) {
                                                 name='ios-trash'
                                                 type='ionicon'
                                                 // onPress={() => dispatch(deleteContact(item.id))}
-                                                onPress={() => createTwoButtonAlert(item.id)}
+                                                onPress={() => createTwoButtonAlert(navigation, item.id)}
                                             />
                                         </View>
                                     )

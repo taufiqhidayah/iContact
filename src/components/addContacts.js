@@ -1,4 +1,4 @@
-import { View, Image, Alert } from 'react-native'
+import { View, Alert } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Avatar } from 'react-native-elements';
@@ -7,7 +7,7 @@ import { Button } from 'react-native-elements';
 
 import { Formik } from 'formik';
 
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import ActivityIndicator from './ActivityIndicatorService';
 import { addContact } from '../actions/addContactAction';
@@ -42,7 +42,6 @@ export default function AddContact({ route, navigation }) {
             <Formik
                 initialValues={isData}
                 onSubmit={values => {
-                    // console.log(values)
                     _handleFormSubmit(values)
                 }}
             >
@@ -57,8 +56,12 @@ export default function AddContact({ route, navigation }) {
                                         rounded
                                         title={values.firstName[0]} />
                                 ) : (
-
-                                    <Image source={{ uri: values?.photo }} style={{ width: 50, height: 50, borderRadius: 50 }} />
+                                    <Avatar
+                                        size="large"
+                                        rounded
+                                        containerStyle={{ backgroundColor: "grey" }}
+                                        source={{ uri: values?.photo }}
+                                    />
                                 )}
                             </View>
                             <View style={{
@@ -94,6 +97,7 @@ export default function AddContact({ route, navigation }) {
                                 </View>
                             </View>
                             <Input
+
                                 value={values.age.toString()}
                                 onChangeText={handleChange('age')}
                                 onBlur={handleBlur('age')}
@@ -107,9 +111,11 @@ export default function AddContact({ route, navigation }) {
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 20 }}>
                             <Button
+                                onPress={() => navigation.goBack()}
                                 title="Cancel"
                                 type="clear" />
                             <Button
+                                disabled={values.firstName === '' || values.lastName === '' || values.age === ''}
                                 onPress={handleSubmit}
                                 title={item ? 'Update' : 'Add'}
                                 type="clear" />

@@ -24,7 +24,7 @@ const ListComponent = ({ data, navigation, onRefresh, loading }) => {
     }, []);
 
     const sortByTitle = mergeData.sort((a, b) => a.title.localeCompare(b.title));
-    // console.log(sortByTitle, 'mergeData')
+
     return (
         <SectionList
             style={{ marginBottom: 100 }}
