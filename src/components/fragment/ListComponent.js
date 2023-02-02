@@ -7,8 +7,8 @@ import {
 import React from 'react'
 
 import { Avatar, Icon, ListItem } from 'react-native-elements';
-export default function ListComponent({ data, navigation, onRefresh, loading }) {
 
+const ListComponent = ({ data, navigation, onRefresh, loading }) => {
     const firstData = data.map(val => ({
         category: val.firstName[0],
         data: val,
@@ -24,37 +24,41 @@ export default function ListComponent({ data, navigation, onRefresh, loading }) 
     }, []);
 
     const sortByTitle = mergeData.sort((a, b) => a.title.localeCompare(b.title));
+    // console.log(sortByTitle, 'mergeData')
     return (
         <SectionList
+            style={{ marginBottom: 100 }}
             refreshControl={
                 <RefreshControl refreshing={loading} onRefresh={onRefresh} />
             }
             sections={sortByTitle}
-            keyExtractor={(item, index) => item + index}
-            renderItem={({ item }) => (
-                <ListItem style={{ marginTop: 1 }} onPress={() => navigation.navigate('add', { item })} bottomDivider>
-                    {item.photo !== 'N/A' ? (
-                        <Avatar
-                            rounded
-                            containerStyle={{ backgroundColor: "grey" }}
-                            source={{ uri: item?.photo || 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }}
-                        />
-                    ) : (
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+                console.log(item, 'item')
+                return (
+                    <ListItem style={{ marginTop: 1 }} onPress={() => navigation.navigate('add', { item })} bottomDivider>
+                        {item.photo !== 'N/A' ? (
+                            <Avatar
+                                rounded
+                                source={{ uri: item?.photo }}
+                            />
+                        ) : (
 
-                        <Avatar
-                            rounded
-                            title={item.firstName[0]}
-                            containerStyle={{ backgroundColor: "grey" }}
-                        />
-                    )}
+                            <Avatar
+                                rounded
+                                title={item.firstName[0]}
+                                containerStyle={{ backgroundColor: "grey" }}
+                            />
+                        )}
 
-                    <ListItem.Content>
-                        <ListItem.Title>{item.firstName + ' ' + item.lastName}</ListItem.Title>
-                        <ListItem.Subtitle>Age: {item.age}</ListItem.Subtitle>
-                    </ListItem.Content>
-                    <Icon name="chevron-right" />
-                </ListItem>
-            )}
+                        <ListItem.Content>
+                            <ListItem.Title>{item.firstName + ' ' + item.lastName}</ListItem.Title>
+                            <ListItem.Subtitle>Age: {item.age}</ListItem.Subtitle>
+                        </ListItem.Content>
+                        <Icon name="chevron-right" />
+                    </ListItem>
+                )
+            }}
             renderSectionHeader={({ section: { title } }) => (
                 <View style={{
                     flexDirection: 'row',
@@ -65,6 +69,7 @@ export default function ListComponent({ data, navigation, onRefresh, loading }) 
                     marginBottom: 10
                 }}>
                     <Text style={{
+                        color: '#000',
                         fontFamily: 'Nunito-SemiBold',
                         fontWeight: '300',
                     }}> {title}</Text>
@@ -74,3 +79,5 @@ export default function ListComponent({ data, navigation, onRefresh, loading }) 
         />
     )
 }
+
+export default ListComponent;
