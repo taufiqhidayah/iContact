@@ -97,7 +97,7 @@ export default function AddContact({ route, navigation }) {
                                 </View>
                             </View>
                             <Input
-
+                                disabled={item ? true : false}
                                 value={values.age.toString()}
                                 onChangeText={handleChange('age')}
                                 onBlur={handleBlur('age')}

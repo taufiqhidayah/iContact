@@ -64,8 +64,6 @@ export default class ContactApi {
       const bodyPost = {
         firstName: data.firstName,
         lastName: data.lastName,
-        age: parseInt(data.age),
-        ...(data.photo && { photo: data.photo })
       };
       const response = await fetch(`${BASE_API}contact/${param}`, {
         method: 'PUT',
